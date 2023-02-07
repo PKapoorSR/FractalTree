@@ -1,0 +1,67 @@
+import javax.swing.*;
+import java.awt.*;
+import java.awt.Point;
+
+public class fractalTree extends JPanel{
+
+    private Point start;
+    private Point end;
+
+    public fractalTree(){
+        end = new Point(0,0); //end point for the root
+        start = new Point(0,400); //starting point for the root
+    }
+    /*
+        Makes the the right branch for the tree
+     */
+    public void endPointRight(Point start, double len, double ang, Graphics g){
+        Graphics2D g2d = (Graphics2D)g;
+
+        double newX = start.x + len * Math.cos(ang); //Finding the new endpoint x
+        double newY = start.y - len * Math.sin(ang); //Finding the new endpoint y
+
+        Point Final = new Point((int)newX,(int)newY); //Putting them into a Point Object
+        g2d.drawLine(start.x, start.y, Final.x, Final.y); //Drawing a line at that point
+        len = len * 0.70; //Shrinking the line each run
+        if(len > 2) { //escape
+            endPointRight(Final, len,ang - (Math.PI/4.5), g); //offset each Right Branch by an angle and run the method again
+            endPointLeft(Final,len,ang + (Math.PI/6.5), g); //offset each Left Branch by an angle and run the method again
+        }
+    }
+    /*
+        Makes the the left branch for the tree
+     */
+    public void endPointLeft(Point start, double len, double ang, Graphics g){
+        Graphics2D g2d = (Graphics2D)g;
+
+        double newX = start.x + len * Math.cos(ang); //Finding the new endpoint x
+        double newY = start.y - len * Math.sin(ang); //Finding the new endpoint y
+
+        Point Final = new Point((int)newX,(int)newY); //Putting them into a Point Object
+        g2d.drawLine(start.x, start.y, Final.x, Final.y); //Drawing a line at that point
+        len = len * 0.70; //Shrinking the line each run
+        if(len > 2) { //escape
+            endPointRight(Final, len,ang - (Math.PI/4.5), g); //offset each Right Branch by an angle and run the method again
+            endPointLeft(Final,len,ang + (Math.PI/6.5), g); //offset each Left Branch by an angle and run the method again
+        }
+    }
+    public void paint(Graphics g){
+        Graphics2D g2d = (Graphics2D)g;
+        g2d.translate(800/2,800/2); //change origin to center of window
+
+        g2d.drawLine(start.x,start.y,end.x,end.y); //Starting root
+
+        endPointLeft(end,120,3 * Math.PI/4, g); //Makes the Left Branch
+        endPointRight(end,120,Math.PI/4,g); //Makes the Right Branch
+    }
+
+    public static void main(String[] args){
+        fractalTree r = new fractalTree(); //Making an object to add to Frame
+        JFrame frame = new JFrame(); //Making GUI Frame
+        frame.setSize(800, 800); //Setting size of video
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); //Ends program if you hit x in the top right
+        frame.setLocationRelativeTo(null); //Not sure what this does, just know I need it
+        frame.setVisible(true); //Allows us to see the window
+        frame.add(r); //adds object to Frame
+    }
+}
